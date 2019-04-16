@@ -15,22 +15,26 @@ This fork was cloned from PlusToolkit/PlusBuild.git and is intended to be extend
 2. Set the CMake source directory to this directory.
 3. Set the build directory to wherever you want to build the binaries.
 4. Configure with Visual Studio **2010 WIN32** native compliers.
-5. Set the following flags:
-    * PLUSAPP_TEST_GUI                : FALSE
-    * PLUSBUILD_BUILD_PLUSAPP         : FALSE
-    * PLUSBUILD_BUILD_PLUS_WIDGETS    : FALSE
-    * PLUSBUILD_USE_IntuitiveDaVinci  : TRUE
-    * PLUSBUILD_USE_<AllOtherDevices> : False
-        *We only really care about using the da Vinci API right now, so don't use any of the other devices.
+5. Set the following flags to make the build less complicated:
+
+| Name                           | Value   |
+| ------------------------------ |:-------:|
+| PLUSAPP_TEST_GUI               | *FALSE* |
+| PLUSBUILD_BUILD_PLUSAPP        | *FALSE* |
+| PLUSBUILD_BUILD_PLUS_WIDGETS   | *FALSE* |
+| PLUSBUILD_USE_IntuitiveDaVinci | *TRUE*  |
+| PLUSBUILD_USE_<OtherDevices>   | *False* |
+
+    * We only really care about using the da Vinci API right now, so don't use any of the other devices.
+
 6. Configure.
-7. Set include directory and static library for the da Vinci API:
-    *IntuitiveDaVinci_INCLUDE_DIR     : *your/install/location/include*
-    *IntuitiveDaVinci_LIBRARY         : *your/install/location/lib/isi_api.lib*
-8. Set the option: 
-    * PLUSBUILD_EXTERNAL_VTK_VERSION  : *v7.1.0*
-      * This is to fix an unknown compatibility issue.
+7. We need to find the include directory and static library for the da Vinci API in order to link to it:
+    * Set IntuitiveDaVinci_INCLUDE_DIR     to  *your/isi_api/install/location/include*
+    * Set IntuitiveDaVinci_LIBRARY         to  *your/isi_api/install/location/lib/isi_api.lib*
+8. Now in order to fix an unknown compatibility issue: 
+    * Set PLUSBUILD_EXTERNAL_VTK_VERSION  to *v7.1.0*
 9. Configure.
-10. Generate
+10. Generate.
 11. Open the project.  It should open with VS10 by default.
 12. Set configuration to RELEASE.  
     * This is for binary compatibility with *isi_api.lib*.

@@ -25,8 +25,6 @@ This fork was cloned from PlusToolkit/PlusBuild.git and is intended to be extend
 | PLUSBUILD_USE_IntuitiveDaVinci | *TRUE*  |
 | PLUSBUILD_USE_<OtherDevices>   | *False* |
 
-    * We only really care about using the da Vinci API right now, so don't use any of the other devices.
-
 6. Configure.
 7. We need to find the include directory and static library for the da Vinci API in order to link to it:
     * Set IntuitiveDaVinci_INCLUDE_DIR     to  *your/isi_api/install/location/include*

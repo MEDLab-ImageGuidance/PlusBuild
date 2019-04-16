@@ -23,7 +23,7 @@ This fork was cloned from PlusToolkit/PlusBuild.git and is intended to be extend
 | PLUSBUILD_BUILD_PLUSAPP        | *FALSE* |
 | PLUSBUILD_BUILD_PLUS_WIDGETS   | *FALSE* |
 | PLUSBUILD_USE_IntuitiveDaVinci | *TRUE*  |
-| PLUSBUILD_USE_<OtherDevices>   | *False* |
+| PLUSBUILD_USE_*OtherDevices*   | *FALSE* |
 
 6. Configure.
 7. We need to find the include directory and static library for the da Vinci API in order to link to it:

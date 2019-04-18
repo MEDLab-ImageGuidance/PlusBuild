@@ -332,7 +332,7 @@ ENDIF()
 #-----------------------------------------------------------------------------
 # Plus revision - Set Plus stable relase revision (master means latest)
 #-----------------------------------------------------------------------------
-SET(PLUSLIB_GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/PlusToolkit/PlusLib.git" CACHE STRING "Set PlusLib desired git url")
+SET(PLUSLIB_GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/fergujm2/PlusLib.git" CACHE STRING "Set PlusLib desired git url")
 MARK_AS_ADVANCED(PLUSLIB_GIT_REPOSITORY)
 SET(PLUSLIB_GIT_REVISION "master" CACHE STRING "Set PlusLib desired git hash (master means latest)")
 MARK_AS_ADVANCED(PLUSLIB_GIT_REVISION)

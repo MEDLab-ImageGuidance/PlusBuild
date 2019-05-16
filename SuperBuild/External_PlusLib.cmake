@@ -254,8 +254,6 @@ IF(PLUS_USE_OvrvisionPro)
     )
 ENDIF()
 
-MESSAGE(WARNING "IntuitiveDaVinci_INCLUDE_DIRS=${IntuitiveDaVinci_INCLUDE_DIRS}")
-
 IF(PLUS_USE_IntuitiveDaVinci)
   STRING(REPLACE ";" "|" _TMP_INCLUDE_STR "${IntuitiveDaVinci_INCLUDE_DIRS}")
   LIST(APPEND PLUSBUILD_ADDITIONAL_SDK_ARGS
@@ -264,9 +262,6 @@ IF(PLUS_USE_IntuitiveDaVinci)
 	-DIntuitiveDaVinci_BINARY_DIR:PATH=${IntuitiveDaVinci_BINARY_DIR}
     )
 ENDIF()
-
-MESSAGE(WARNING "PLUSBUILD_ADDITIONAL_SDK_ARGS=${PLUSBUILD_ADDITIONAL_SDK_ARGS}")
-
 
 IF(PLUS_USE_MMF_VIDEO OR PLUS_USE_TELEMED_VIDEO)
   # Get latest full Windows SDK (that contains actual header and lib files)

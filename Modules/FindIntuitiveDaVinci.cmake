@@ -54,7 +54,6 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(IntuitiveDaVinci DEFAULT_MSG
 )
 
 SET(IntuitiveDaVinci_FOUND ${INTUITIVEDAVINCI_FOUND}) 
-MESSAGE(WARNING "IntuitiveDaVinci_INCLUDE_DIRS=${IntuitiveDaVinci_INCLUDE_DIRS}")
 IF(IntuitiveDaVinci_FOUND)
   SET( IntuitiveDaVinci_LIBRARY_DIR ${IntuitiveDaVinci_LIBRARY_DIR} )
   SET( IntuitiveDaVinci_BINARY_DIR ${IntuitiveDaVinci_BINARY_DIR} )

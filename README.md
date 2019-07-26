@@ -14,8 +14,7 @@ This fork was cloned from PlusToolkit/PlusBuild.git and is intended to be extend
 1. Open CMake.
 2. Set the CMake source directory to this directory.
 3. Set the build directory to wherever you want to build the binaries.
-4. Configure with Visual Studio **2010 WIN32** native compliers.
-5. Set the following flags to make the build less complicated:
+4. Set the following flags to make the build less complicated:
 
 | Name                           | Value   |
 | ------------------------------ |:-------:|

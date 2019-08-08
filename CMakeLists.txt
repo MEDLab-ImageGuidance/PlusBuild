@@ -274,6 +274,8 @@ OPTION(PLUS_USE_PHIDGET_SPATIAL_TRACKER "Provide support for the Phidget Spatial
 OPTION(PLUS_USE_3dConnexion_TRACKER "Provide support for the 3dConnexion 3d mouse" OFF)
 OPTION(PLUS_USE_STEALTHLINK "Provide support for the Medtronick StealthLink Server" OFF)
 OPTION(PLUS_USE_IntuitiveDaVinci "Provide support for the da Vinci Surgical System" OFF)
+# This is edited for Xi
+OPTION(PLUS_USE_IntuitiveDaVinciXi "Provide support for the da Vinci Xi Surgical System" OFF)
 OPTION(PLUS_USE_OvrvisionPro "Provide support for the OvrvisionPro Stereo Camera" OFF)
 OPTION(PLUS_USE_OPENHAPTICS "Provide support of OpenHaptics devices" OFF)
 OPTION(PLUS_USE_WITMOTIONTRACKER "Provide support for the WitMotion IMU Trackers" OFF)
@@ -650,6 +652,14 @@ IF(PLUS_USE_IntuitiveDaVinci)
   FIND_PACKAGE(IntuitiveDaVinci)
   IF(NOT IntuitiveDaVinci_FOUND)
     MESSAGE(FATAL_ERROR "This project requires headers and library provided by Intuitive. One of the components is missing. Please verify configuration or turn off PLUS_USE_IntuitiveDaVinci.")
+  ENDIF()
+ENDIF()
+
+# This is edited for Xi
+IF(PLUS_USE_IntuitiveDaVinciXi)
+  FIND_PACKAGE(IntuitiveDaVinciXi)
+  IF(NOT IntuitiveDaVinciXi_FOUND)
+    MESSAGE(FATAL_ERROR "This project requires headers and library provided by Intuitive. One of the components is missing. Please verify configuration or turn off PLUS_USE_IntuitiveDaVinciXi.")
   ENDIF()
 ENDIF()
 

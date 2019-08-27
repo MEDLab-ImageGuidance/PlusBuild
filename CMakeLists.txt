@@ -334,20 +334,20 @@ ENDIF()
 #-----------------------------------------------------------------------------
 # Plus revision - Set Plus stable relase revision (master means latest)
 #-----------------------------------------------------------------------------
-SET(PLUSLIB_GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/MEDLab-ImageGuidance/PlusLib.git" CACHE STRING "Set PlusLib desired git url")
+SET(PLUSLIB_GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/medlabprojects/PlusLib.git" CACHE STRING "Set PlusLib desired git url")
 MARK_AS_ADVANCED(PLUSLIB_GIT_REPOSITORY)
 SET(PLUSLIB_GIT_REVISION "plus-lib-for-xi" CACHE STRING "Set PlusLib desired git hash (master means latest)")
 MARK_AS_ADVANCED(PLUSLIB_GIT_REVISION)
 
 SET(PLUSAPP_GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/PlusToolkit/PlusApp.git" CACHE STRING "Set PlusApp desired git url")
 MARK_AS_ADVANCED(PLUSAPP_GIT_REPOSITORY)
-SET(PLUSAPP_GIT_REVISION "plus-lib-for-xi" CACHE STRING "Set PlusApp desired git hash (master means latest)")
+SET(PLUSAPP_GIT_REVISION "master" CACHE STRING "Set PlusApp desired git hash (master means latest)")
 MARK_AS_ADVANCED(PLUSAPP_GIT_REVISION)
 
 IF(PLUSBUILD_DOWNLOAD_PLUSLIBDATA)
   SET(PLUSBUILD_PLUSLIBDATA_GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/PlusToolkit/PlusLibData.git" CACHE STRING "Set PlusLibData desired git url.")
   MARK_AS_ADVANCED(PLUSBUILD_PLUSLIBDATA_GIT_REPOSITORY)
-  SET(PLUSBUILD_PLUSLIBDATA_GIT_REVISION "plus-lib-for-xi" CACHE STRING "Set PlusLibData desired git hash (master means latest).")
+  SET(PLUSBUILD_PLUSLIBDATA_GIT_REVISION "master" CACHE STRING "Set PlusLibData desired git hash (master means latest).")
   MARK_AS_ADVANCED(PLUSBUILD_PLUSLIBDATA_GIT_REVISION)
 ENDIF()
 

@@ -28,7 +28,7 @@ Prerequisites
   > sudo apt install build-essential
   > sudo apt build-dep vtk
 - Qt
-  > sudo apt install qtbase5-dev qttools5-dev libqt5webkit5-dev libqt5x11extras5-dev
+  > sudo apt install qtbase5-dev qttools5-dev libqt5webkit5-dev libqt5x11extras5-dev libqt5xmlpatterns5-dev
 
 Build Process
 -------------
@@ -36,7 +36,7 @@ Build Process
 - Clone PlusBuild git repository from **https://github.com/PlusToolkit/PlusBuild.git** into **\home\username\devel\PlusBuild**. This directory will be referred to as _PlusBuild_.
 - Switch to branch:
   - **master**: this branch is selected by default, it is recommended for most developers (e.g., who plan to add features, modify the Plus library, or need recently added features)
-  - **Plus-2.6**: stable version, recommended for users who do not plan to change anything in Plus and don't need recent features
+  - **Plus-2.8**: stable version, recommended for users who do not plan to change anything in Plus and don't need recent features
 - Configure the PlusBuild project with CMake. Recommended binary build directory location: _\home\username\devel\PlusBuild-bin_.  This directory will be referred to as _Plus-bin_.
 - Specify a generator:
   - Unix Makefiles

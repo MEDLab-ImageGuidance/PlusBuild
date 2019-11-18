@@ -1,4 +1,4 @@
-SET(PLUSBUILD_OpenCV_VERSION "3.3.1" CACHE STRING "Set OpenCV version (version: [major].[minor].[patch])")
+SET(PLUSBUILD_OpenCV_VERSION "3.4.7" CACHE STRING "Set OpenCV version (version: [major].[minor].[patch])")
 
 IF(OpenCV_DIR)
   FIND_PACKAGE(OpenCV ${PLUSBUILD_OpenCV_VERSION} REQUIRED NO_MODULE)
@@ -72,14 +72,6 @@ ELSE()
     LIST(APPEND OpenCV_PLATFORM_SPECIFIC_ARGS -DBUILD_WITH_STATIC_CRT:BOOL=OFF)
   ENDIF()
 
-  IF(PLUSBUILD_VTK_VERSION VERSION_GREATER_EQUAL 8.0.0 
-    AND NOT PLUSBUILD_OpenCV_VERSION EQUAL "master"
-    AND PLUSBUILD_OpenCV_VERSION VERSION_LESS 3.4.5
-    )
-    # VTK v8.0.0+ requires more recent opencv
-    SET(PLUSBUILD_OpenCV_VERSION 3.4.5 CACHE STRING "Set OpenCV version (version: [major].[minor].[patch])" FORCE)
-  ENDIF()
-
   # No OpenCV is specified, so download and build
   SetGitRepositoryTag(
     OpenCV
@@ -87,9 +79,9 @@ ELSE()
     ${PLUSBUILD_OpenCV_VERSION}
     )
 
-  SET (PLUS_OpenCV_src_DIR ${CMAKE_BINARY_DIR}/Deps/OpenCV CACHE INTERNAL "Path to store OpenCV contents.")
-  SET (PLUS_OpenCV_prefix_DIR ${CMAKE_BINARY_DIR}/Deps/OpenCV-prefix CACHE INTERNAL "Path to store OpenCV prefix data.")
-  SET (PLUS_OpenCV_DIR ${CMAKE_BINARY_DIR}/Deps/OpenCV-bin CACHE INTERNAL "Path to store OpenCV binaries")
+  SET (PLUS_OpenCV_src_DIR ${CMAKE_BINARY_DIR}/OpenCV CACHE INTERNAL "Path to store OpenCV contents.")
+  SET (PLUS_OpenCV_prefix_DIR ${CMAKE_BINARY_DIR}/OpenCV-prefix CACHE INTERNAL "Path to store OpenCV prefix data.")
+  SET (PLUS_OpenCV_DIR ${CMAKE_BINARY_DIR}/OpenCV-bin CACHE INTERNAL "Path to store OpenCV binaries")
   ExternalProject_Add( OpenCV
     PREFIX ${PLUS_OpenCV_prefix_DIR}
     "${PLUSBUILD_EXTERNAL_PROJECT_CUSTOM_COMMANDS}"

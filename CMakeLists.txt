@@ -17,6 +17,13 @@ SET(CMAKE_MODULE_PATH
   ${CMAKE_MODULE_PATH}
   )
 
+SET(PLUSBUILD_DEFAULT_INSTALL_OPTION OFF)
+IF(MSVC)
+  SET(PLUSBUILD_DEFAULT_INSTALL_OPTION ON)
+ENDIF()
+OPTION(PLUSBUILD_INSTALL_VTK "" ${PLUSBUILD_DEFAULT_INSTALL_OPTION})
+OPTION(PLUSBUILD_INSTALL_ITK "" ${PLUSBUILD_DEFAULT_INSTALL_OPTION})
+
 # Include our build macros
 INCLUDE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/PlusBuildMacros.cmake)
 
@@ -103,13 +110,18 @@ ENDIF()
 # Options to control build process
 #-----------------------------------------------------------------------------
 
+SET(BUILD_ARCHITECTURE "x64")
+IF(CMAKE_SIZEOF_VOID_P EQUAL 4)
+  SET(BUILD_ARCHITECTURE "x86")
+ENDIF()
+
 # Determine the operating system to set default values accordingly
 SET(ENABLED_BY_DEFAULT_ON_WINDOWS_ONLY OFF)
 SET(ENABLED_BY_DEFAULT_ON_WINDOWS32_ONLY OFF)
 SET(ENABLED_BY_DEFAULT_ON_WINDOWS64_ONLY OFF)
 IF(CMAKE_HOST_WIN32)
   SET(ENABLED_BY_DEFAULT_ON_WINDOWS_ONLY ON)
-  IF(NOT CMAKE_CL_64)
+  IF(BUILD_ARCHITECTURE MATCHES "x86")
     SET(ENABLED_BY_DEFAULT_ON_WINDOWS32_ONLY ON)
   ELSE()
     SET(ENABLED_BY_DEFAULT_ON_WINDOWS64_ONLY ON)
@@ -189,7 +201,7 @@ IF(PLUS_USE_BKPROFOCUS_VIDEO)
   OPTION(PLUS_USE_BKPROFOCUS_CAMERALINK "Enable acquisition from BK ProFocus ultrasound systems through CameraLink interface" OFF)
   OPTION(PLUS_TEST_BKPROFOCUS "Enable testing of acquisition from BK ProFocus ultrasound systems. Enable this only if a BK ProFocus device is connected to this computer. " OFF)
 ENDIF()
-IF((NOT ${CMAKE_GENERATOR} MATCHES "Win64") AND TEMP_OS_ARCH MATCHES "x64" AND PLUS_USE_BKPROFOCUS_CAMERALINK)
+IF((NOT BUILD_ARCHITECTURE MATCHES "x64") AND TEMP_OS_ARCH MATCHES "x64" AND PLUS_USE_BKPROFOCUS_CAMERALINK)
   # warning regarding cross compilation of bkprofocus
   MESSAGE("BK ProFocus support on a 64-bit OS requires 64-bit Plus build. A 64-bit OS and a 32-bit Plus build configuration is detected. Compilation will be successful, but the resulting executables will fail to start.")
 ENDIF()
@@ -229,10 +241,10 @@ OPTION(PLUS_USE_CLARIUS "Provide support for Clarius Ultrasound devices" OFF)
 # ---------- Tracking Hardware ------------
 OPTION(PLUS_USE_OPTITRACK "Provide support for the OptiTrack tracking system" OFF)
 IF (PLUS_USE_OPTITRACK) 
-  IF(NOT ${CMAKE_GENERATOR} MATCHES "Win64")
+  IF(NOT BUILD_ARCHITECTURE MATCHES "x64")
     SET(MOTIVE_VERSION_DEFAULT "1.10.3")
   ELSE()
-    SET(MOTIVE_VERSION_DEFAULT "2.1.1")
+    SET(MOTIVE_VERSION_DEFAULT "2.1.2")
   ENDIF()
   SET(MOTIVE_VERSION ${MOTIVE_VERSION_DEFAULT} CACHE STRING "Choose the motive API version.")
   IF (TEMP_OS_ARCH MATCHES "x86" AND MOTIVE_VERSION VERSION_GREATER "2.1.0")
@@ -275,18 +287,20 @@ OPTION(PLUS_USE_3dConnexion_TRACKER "Provide support for the 3dConnexion 3d mous
 OPTION(PLUS_USE_STEALTHLINK "Provide support for the Medtronick StealthLink Server" OFF)
 OPTION(PLUS_USE_IntuitiveDaVinci "Provide support for the da Vinci Surgical System" OFF)
 OPTION(PLUS_USE_OvrvisionPro "Provide support for the OvrvisionPro Stereo Camera" OFF)
-OPTION(PLUS_USE_OPENHAPTICS "Provide support of OpenHaptics devices" OFF)
-OPTION(PLUS_USE_WITMOTIONTRACKER "Provide support for the WitMotion IMU Trackers" OFF)
 IF(PLUS_USE_OvrvisionPro)
   OPTION(PLUS_TEST_OvrvisionPro "Enable testing of acquisition of stereo images from the OvrvisionPro" OFF)
 ENDIF()
+OPTION(PLUS_USE_OPENHAPTICS "Provide support of OpenHaptics devices" OFF)
+OPTION(PLUS_USE_WITMOTIONTRACKER "Provide support for the WitMotion IMU Trackers" OFF)
 OPTION(PLUS_USE_LEAPMOTION "Provide support for the LeapMotion hand tracker" OFF)
 IF(PLUS_USE_LEAPMOTION)
+  OPTION(PLUS_TEST_LEAPMOTION "Enable testing of LeapMotion device" OFF)
   FIND_PACKAGE(LeapSDK 4.0 REQUIRED
     PATHS 
     ../VASSTTools/LeapMotion/LeapSDK/lib/cmake/LeapSDK # Convenience for members of the VASST lab
     )
 ENDIF()
+OPTION(PLUS_USE_BLACKMAGIC_DECKLINK "Provide support for BlackMagic DeckLink capture cards." OFF)
 
 # ---------- Other devices ------------
 OPTION(PLUS_USE_TextRecognizer "Enable the text recognizer virtual device" OFF)
@@ -313,7 +327,7 @@ ENDIF()
 #-----------------------------------------------------------------------------
 # Other
 SET(PLUSBUILD_VTK_RENDERING_BACKEND "OpenGL2" CACHE STRING "Choose the rendering backend. OpenGL2 is only compatible with more recent graphics cards and does not work on embedded systems like Ultrasonix Windows XPe based systems.")
-set_property(CACHE PLUSBUILD_VTK_RENDERING_BACKEND PROPERTY STRINGS "OpenGL" "OpenGL2")
+set_property(CACHE PLUSBUILD_VTK_RENDERING_BACKEND PROPERTY STRINGS "None" "OpenGL2")
 
 OPTION(PLUSAPP_TEST_GUI "Enable GUI tests" ON)
 
@@ -429,6 +443,9 @@ ENDIF()
 #-----------------------------------------------------------------------------
 SET(ep_qt_args) # Arguments that will have to be passed to external projects that use Qt
 SET(PLUSBUILD_QT_COMPONENTS Core Widgets Designer OpenGL Sql Test Xml XmlPatterns Concurrent Network Gui)
+IF(PLUS_USE_OPTITRACK)
+  LIST(APPEND PLUSBUILD_QT_COMPONENTS Multimedia)
+ENDIF()
 
 IF(PLUSBUILD_BUILD_PLUSAPP OR PLUSBUILD_BUILD_PLUSLIB_WIDGETS)
   FIND_PACKAGE(Qt5 COMPONENTS ${PLUSBUILD_QT_COMPONENTS} QUIET)
@@ -450,6 +467,10 @@ IF(PLUSBUILD_BUILD_PLUSAPP OR PLUSBUILD_BUILD_PLUSLIB_WIDGETS)
 ENDIF()
 
 INCLUDE(SuperBuild/External_VTK.cmake)
+
+SET(PLUS_ITK_VERSION 5 CACHE STRING "Set version of ITK to use. ITK 5 is reccommended")
+MARK_AS_ADVANCED(PLUS_ITK_VERSION)
+set_property(CACHE PLUS_ITK_VERSION PROPERTY STRINGS "5" "4")
 INCLUDE(SuperBuild/External_ITK.cmake)
 
 IF(PLUSBUILD_USE_OpenIGTLink)
@@ -493,7 +514,6 @@ IF(PLUS_USE_INFRARED_SEEK_CAM AND NOT PLUSBUILD_USE_OpenCV)
   MESSAGE("PLUS_USE_INFRARED_SEEK_CAM requires PLUSBUILD_USE_OpenCV option enabled, enabling.")
   SET(PLUSBUILD_USE_OpenCV ON CACHE BOOL "Use OpenCV for infrared Seek camera and other features." FORCE)
 ENDIF()
-
 IF(PLUS_USE_OPTICAL_MARKER_TRACKER)
   IF (NOT PLUSBUILD_USE_aruco)
     MESSAGE("PLUS_USE_OPTICAL_MARKER_TRACKER requires PLUSBUILD_USE_aruco option enabled, enabling.")
@@ -502,6 +522,12 @@ IF(PLUS_USE_OPTICAL_MARKER_TRACKER)
   IF (NOT PLUSBUILD_USE_OpenCV)
     MESSAGE("PLUS_USE_OPTICAL_MARKER_TRACKER requires PLUSBUILD_USE_OpenCV option enabled, enabling.")
     SET(PLUSBUILD_USE_OpenCV ON CACHE BOOL "Use OpenCV for optical marker tracking and other features." FORCE)
+  ENDIF()
+ENDIF()
+IF (PLUS_USE_CLARIUS)
+    IF (NOT PLUSBUILD_USE_OpenCV)
+    MESSAGE("PLUS_USE_CLARIUS requires PLUSBUILD_USE_OpenCV option enabled, enabling.")
+    SET(PLUSBUILD_USE_OpenCV ON CACHE BOOL "Use OpenCV for Clarius device and other features." FORCE)
   ENDIF()
 ENDIF()
 #-- END OvrvisionPro/OPTICAL_TRACKER dependency verification ------------------------------------------
@@ -674,6 +700,13 @@ IF(PLUS_USE_OPENHAPTICS)
   ENDIF()
 ENDIF()
 
+IF(PLUS_USE_BLACKMAGIC_DECKLINK)
+  FIND_PACKAGE(DeckLinkSDK)
+  IF(NOT DeckLinkSDK_FOUND)
+    MESSAGE(FATAL_ERROR "This project requires the BlackMagic DeckLink SDK to provide support for DeckLink capture cards. Please select the BlackMagic SDK directory, or turn off PLUS_USE_BLACKMAGIC_DECKLINK.")
+  ENDIF()
+ENDIF()
+
 IF (PLUS_USE_PHILIPS_3D_ULTRASOUND)
   IF(NOT CMAKE_HOST_WIN32)
     # Philips is windows only
@@ -782,7 +815,6 @@ SET(PlusModelCatalog_DEPENDENCIES PlusLib)
 #------------------------------------------------------------------------------
 # Construct a descriptive build name
 #------------------------------------------------------------------------------
-SET(BUILD_ARCHITECTURE "x64")
 
 IF(UNIX AND NOT APPLE)
   SET(LINUX TRUE)
@@ -844,9 +876,6 @@ ENDIF()
 
 IF(WIN32)
   SET(SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_VERSION}")
-  IF(NOT ${CMAKE_GENERATOR} MATCHES "Win64")
-    SET(BUILD_ARCHITECTURE "x86")
-  ENDIF()
 ENDIF()
 
 SET(PLUSBUILD_BUILDNAME_POSTFIX "" CACHE STRING "Postfix that will be appended to the build name on the dashboard. If defined then BUILDNAME variable is always overwritten.")

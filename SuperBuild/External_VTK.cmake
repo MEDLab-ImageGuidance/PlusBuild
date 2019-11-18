@@ -38,13 +38,13 @@ ELSE()
   IF(PLUSBUILD_USE_Tesseract)
     LIST(APPEND VTK_VERSION_SPECIFIC_ARGS -DModule_vtkzlib:INTERNAL=ON)
   ENDIF()
-  
+
   IF(MSVC)
     LIST(APPEND VTK_VERSION_SPECIFIC_ARGS -DCMAKE_CXX_MP_FLAG:BOOL=ON)
   ENDIF()
 
   SET(PLUSBUILD_EXTERNAL_VTK_VERSION "v8.2.0" CACHE STRING "User-selected VTK version to build Plus against")
-  SET(_vtk_versions "v7.1.0" "v8.2.0")
+  SET(_vtk_versions "v8.2.0")
   set_property( CACHE PLUSBUILD_EXTERNAL_VTK_VERSION PROPERTY STRINGS "" ${_vtk_versions} )
 
   IF(PLUSBUILD_EXTERNAL_VTK_VERSION STREQUAL "")
@@ -63,6 +63,9 @@ ELSE()
       LIST(GET _version_list 2 _version_patch)
       # List based variable is used elsewhere
       SET(PLUSBUILD_VTK_VERSION ${_version_major}.${_version_minor}.${_version_patch} CACHE INTERNAL "Internal CMake version for VTK.")
+      SET(PLUSBUILD_VTK_VERSION_MAJOR ${_version_major})
+      SET(PLUSBUILD_VTK_VERSION_MINOR ${_version_minor})
+      SET(PLUSBUILD_VTK_VERSION_PATCH ${_version_patch})
     ENDIF()
   ENDIF()
 
@@ -72,38 +75,57 @@ ELSE()
     ${PLUSBUILD_EXTERNAL_VTK_VERSION}
     )
 
-  SET (PLUS_VTK_SRC_DIR "${CMAKE_BINARY_DIR}/Deps/vtk")
-  SET (PLUS_VTK_DIR "${CMAKE_BINARY_DIR}/Deps/vtk-bin" CACHE INTERNAL "Path to store vtk binaries")
+  SET (PLUS_VTK_SRC_DIR "${CMAKE_BINARY_DIR}/vtk")
+  SET (PLUS_VTK_BIN_DIR "${CMAKE_BINARY_DIR}/vtk-bin" CACHE INTERNAL "Path to store vtk binaries")
+  SET (PLUS_VTK_INSTALL_DIR "${CMAKE_BINARY_DIR}/vtk-int" CACHE INTERNAL "Path to install vtk")
+  SET (PLUS_VTK_DIR ${PLUS_VTK_BIN_DIR})
+
+  SET (VTK_INSTALL_COMMAND "")
+  IF (PLUSBUILD_INSTALL_VTK)
+    SET (PLUS_VTK_DIR "${PLUS_VTK_INSTALL_DIR}/lib/cmake/vtk-${PLUSBUILD_VTK_VERSION_MAJOR}.${PLUSBUILD_VTK_VERSION_MINOR}")
+  ELSE()
+    SET (VTK_INSTALL_COMMAND 
+      INSTALL_COMMAND ""
+      )
+  ENDIF()
+
+  SET (PLUS_VTK_OPTIONS -DVTK_Group_Rendering:BOOL=ON)
+  IF(PLUSBUILD_VTK_RENDERING_BACKEND STREQUAL None)
+    SET(PLUS_VTK_OPTIONS -DVTK_Group_Rendering:BOOL=OFF)
+  ENDIF()
 
   ExternalProject_Add( vtk
     "${PLUSBUILD_EXTERNAL_PROJECT_CUSTOM_COMMANDS}"
-    PREFIX "${CMAKE_BINARY_DIR}/Deps/vtk-prefix"
+    PREFIX "${CMAKE_BINARY_DIR}/vtk-prefix"
     SOURCE_DIR "${PLUS_VTK_SRC_DIR}"
-    BINARY_DIR "${PLUS_VTK_DIR}"
+    BINARY_DIR "${PLUS_VTK_BIN_DIR}"
+    INSTALL_DIR ${PLUS_VTK_INSTALL_DIR}
     #--Download step--------------
     GIT_REPOSITORY ${VTK_GIT_REPOSITORY}
     GIT_TAG ${VTK_GIT_TAG}
     #--Configure step-------------
-    CMAKE_ARGS 
+    CMAKE_ARGS
       ${ep_common_args}
       ${ep_qt_args}
       ${VTK_VERSION_SPECIFIC_ARGS}
+      -DCMAKE_INSTALL_PREFIX:PATH=${PLUS_VTK_INSTALL_DIR}
       -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
       -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
       -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
       -DBUILD_SHARED_LIBS:BOOL=${PLUSBUILD_BUILD_SHARED_LIBS}
-      -DBUILD_TESTING:BOOL=OFF 
+      -DBUILD_TESTING:BOOL=OFF
       -DBUILD_EXAMPLES:BOOL=OFF
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
       -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
       -DVTK_SMP_IMPLEMENTATION_TYPE:STRING="OpenMP"
       -DVTK_WRAP_PYTHON:BOOL=OFF
       -DVTK_RENDERING_BACKEND:STRING=${PLUSBUILD_VTK_RENDERING_BACKEND}
+      -DCMAKE_DEBUG_POSTFIX:STRING=D
+      ${PLUS_VTK_OPTIONS}
     #--Build step-----------------
     BUILD_ALWAYS 1
-    #--Install step-----------------
-    INSTALL_COMMAND ""
     DEPENDS ${VTK_DEPENDENCIES}
+    "${VTK_INSTALL_COMMAND}"
     )
 
   SET(VTK_BUILD_DEPENDENCY_TARGET vtk CACHE INTERNAL "The name of the target to list as a dependency to ensure build order correctness.")

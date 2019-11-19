@@ -261,9 +261,9 @@ IF(PLUS_USE_OvrvisionPro)
 ENDIF()
 
 IF(PLUS_USE_IntuitiveDaVinci)
-  STRING(REPLACE ";" "|" _TMP_INCLUDE_STR "${IntuitiveDaVinci_INCLUDE_DIRS}")
+  STRING(REPLACE ";" "|" _TMP_INCLUDE_STR "${IntuitiveDaVinci_INCLUDE_DIR}")
   LIST(APPEND PLUSBUILD_ADDITIONAL_SDK_ARGS
-    -DIntuitiveDaVinci_INCLUDE_DIRS:STRING=${_TMP_INCLUDE_STR}
+    -DIntuitiveDaVinci_INCLUDE_DIR:STRING=${_TMP_INCLUDE_STR}
 	  -DIntuitiveDaVinci_LIBRARY_DIR:PATH=${IntuitiveDaVinci_LIBRARY_DIR}
 	  -DIntuitiveDaVinci_BINARY_DIR:PATH=${IntuitiveDaVinci_BINARY_DIR}
     )
@@ -392,7 +392,7 @@ IF(BUILDNAME)
 ENDIF(BUILDNAME)
 
 IF(NOT DEFINED(PLUSLIB_GIT_REPOSITORY))
-  SET(PLUSLIB_GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/MEDLab-ImageGuidance/PlusLib.git" CACHE STRING "Set PlusLib desired git url")
+  SET(PLUSLIB_GIT_REPOSITORY "${GIT_PROTOCOL}://github.com/medlabprojects/PlusLib.git" CACHE STRING "Set PlusLib desired git url")
 ENDIF()
 IF(NOT DEFINED(PLUSLIB_GIT_REVISION))
   SET(PLUSLIB_GIT_REVISION "master" CACHE STRING "Set PlusLib desired git hash (master means latest)")

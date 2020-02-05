@@ -301,6 +301,7 @@ IF(PLUS_USE_LEAPMOTION)
     )
 ENDIF()
 OPTION(PLUS_USE_BLACKMAGIC_DECKLINK "Provide support for BlackMagic DeckLink capture cards." OFF)
+OPTION(PLUS_USE_STEAMVR "Provide support for SteamVR tracking system" OFF)
 
 # ---------- Other devices ------------
 OPTION(PLUS_USE_TextRecognizer "Enable the text recognizer virtual device" OFF)
@@ -742,6 +743,10 @@ IF(PLUS_USE_CLARIUS)
   ENDIF()
 ENDIF()
 
+IF(PLUS_USE_STEAMVR)
+  INCLUDE(SuperBuild/External_OpenVR.cmake)
+ENDIF()
+
 #------------------------------------------------------------------------------
 # Specify target dependencies
 #------------------------------------------------------------------------------
@@ -809,6 +814,10 @@ IF(PLUS_USE_LEAPMOTION)
   LIST(APPEND PlusLib_DEPENDENCIES LeapSDK::LeapC)
 ENDIF()
 
+IF(PLUS_USE_STEAMVR AND NOT OpenVR_DIR)
+  LIST(APPEND PlusLib_DEPENDENCIES OpenVR)
+ENDIF()
+
 SET(PlusApp_DEPENDENCIES PlusLib)
 SET(PlusModelCatalog_DEPENDENCIES PlusLib)
 
@@ -864,6 +873,8 @@ ELSEIF(MSVC)
     SET(COMPILER_NAME vs14)
   ELSEIF(${CMAKE_GENERATOR} MATCHES "Visual Studio 15")
     SET(COMPILER_NAME vs15)
+  ELSEIF(${CMAKE_GENERATOR} MATCHES "Visual Studio 16")
+    SET(COMPILER_NAME vs16)
   ELSE()
     SET(COMPILER_NAME vs??)
   ENDIF()
